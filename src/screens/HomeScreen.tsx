@@ -1,23 +1,19 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import { Image, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useState } from "react";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { RootDrawerParamList } from "../../App";
-
+import { colors } from "../../constants/colors";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 type Props = DrawerScreenProps<RootDrawerParamList>;
 
-const HomeScreen = ({}: Props) => {
-  const [recipes, setRecipes] = useState<any>(null);
+const HomeScreen = ({ navigation }: Props) => {
+  const [searchPrompt, setSearchPrompt] = useState<any>("");
 
-  useEffect(() => {
-    async function getUsers() {
-      const response = await fetch(
-        `https://api.spoonacular.com/recipes/random?apiKey=${process.env.EXPO_PUBLIC_SPOONACULAR_API_KEY}`
-      );
-      const users = await response.json();
-      return users;
-    }
-    getUsers().then((data) => setRecipes(data));
-  }, []);
+  const searchRecipes = async () => {
+    navigation.navigate("Search", { prompt: searchPrompt });
+    setSearchPrompt("");
+  };
 
   return (
     <View style={styles.container}>
@@ -39,25 +35,16 @@ const HomeScreen = ({}: Props) => {
         }}
       >
         <Text style={styles.title}>Smart cuisine</Text>
-      </View>
-      <ScrollView style={{ width: "100%", height: "100%" }}>
-        <View style={styles.titleContainer}></View>
-        <View style={styles.itemsContainer}>
-          <Text>Test1</Text>
-          {recipes && (
-            <View>
-              <Text>Test2</Text>
-              <Image
-                source={{
-                  uri: `${recipes.recipes[0].image}`,
-                }}
-                style={styles.foodImg}
-              />
-            </View>
-          )}
-          <Text></Text>
+        <View style={styles.container}>
+          <TextInput
+            style={styles.input}
+            placeholder="Search for recipes"
+            onChangeText={setSearchPrompt}
+            value={searchPrompt}
+            onSubmitEditing={() => searchRecipes()}
+          />
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -67,9 +54,6 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
   },
   img: {
     position: "absolute",
@@ -78,10 +62,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  foodImg: {
-    height: 300,
-    width: 300,
-  },
+
   overlay: {
     position: "absolute",
     top: 0,
@@ -92,7 +73,7 @@ const styles = StyleSheet.create({
   },
 
   titleContainer: {
-    height: 750,
+    height: 720,
     width: "100%",
     display: "flex",
     justifyContent: "center",
@@ -103,8 +84,16 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "white",
   },
-  itemsContainer: {
-    height: 500,
-    backgroundColor: "white",
+  input: {
+    height: 40,
+    width: 200,
+    margin: 12,
+    borderWidth: 1,
+    borderColor: colors.darkGray,
+    padding: 10,
+    borderRadius: 12,
+    fontSize: 16,
+    color: colors.dark,
+    backgroundColor: colors.white,
   },
 });

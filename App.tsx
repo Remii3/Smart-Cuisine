@@ -10,10 +10,13 @@ import { colors } from "./constants/colors";
 import RecipeScreen from "./src/screens/RecipeScreen";
 import { Provider } from "react-redux";
 import { store } from "./src/store/store";
+import SearchScreen from "./src/screens/SearchScreen";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 type RootStackParamList = {
   RootDrawer: undefined;
   Recipe: { productId: string };
+  Search: { prompt: string };
 };
 
 export type RootDrawerParamList = RootStackParamList & {
@@ -23,6 +26,8 @@ export type RootDrawerParamList = RootStackParamList & {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
+
+const queryClient = new QueryClient();
 
 function DrawerNavigator() {
   return (
@@ -57,25 +62,34 @@ function DrawerNavigator() {
 }
 export default function App() {
   return (
-    <Provider store={store}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="RootDrawer">
-          <Stack.Screen
-            name="RootDrawer"
-            component={DrawerNavigator}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Recipe"
-            component={RecipeScreen}
-            options={{
-              headerTitle: "",
-            }}
-          />
-        </Stack.Navigator>
-        <StatusBar style="auto" />
-      </NavigationContainer>
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="RootDrawer">
+            <Stack.Screen
+              name="RootDrawer"
+              component={DrawerNavigator}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Recipe"
+              component={RecipeScreen}
+              options={{
+                headerTitle: "",
+              }}
+            />
+            <Stack.Screen
+              name="Search"
+              component={SearchScreen}
+              options={{
+                headerTitle: "",
+              }}
+            />
+          </Stack.Navigator>
+          <StatusBar style="auto" />
+        </NavigationContainer>
+      </Provider>
+    </QueryClientProvider>
   );
 }
 
