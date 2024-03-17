@@ -10,8 +10,13 @@ import { colors } from "./constants/colors";
 import RecipeScreen from "./src/screens/RecipeScreen";
 import { Provider } from "react-redux";
 import { store } from "./src/store/store";
+
 import SearchScreen from "./src/screens/SearchScreen";
 import { QueryClient, QueryClientProvider } from "react-query";
+
+import LoginScreen from "./src/screens/LoginScreen";
+import RegisterScreen from "./src/screens/RegisterScreen";
+
 
 type RootStackParamList = {
   RootDrawer: undefined;
@@ -22,6 +27,9 @@ type RootStackParamList = {
 export type RootDrawerParamList = RootStackParamList & {
   Home: undefined;
   Recipes: undefined;
+  Login: undefined;
+  Register: undefined;
+  Profile: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -55,6 +63,13 @@ function DrawerNavigator() {
           drawerIcon: ({ size, color }) => (
             <Ionicons name="restaurant" size={size} color={color} />
           ),
+        }}
+      />
+      <Drawer.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          title: "Sign in",
         }}
       />
     </Drawer.Navigator>
