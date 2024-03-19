@@ -15,7 +15,7 @@ const ProfileScreen = () => {
   } = useFetchFavorites(userData?.uid || null);
 
   return (
-    <ScrollView horizontal>
+    <ScrollView>
       {favoriteDishesData && favoriteDishesData.length > 0 ? (
         favoriteDishesData.map((dish: DishCardType) => (
           <DishCard

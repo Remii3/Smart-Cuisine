@@ -16,8 +16,12 @@ const removeFavorite = async ({
   try {
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
+      const currentFavorites = docSnap.data()[itemType] || [];
+      const updatedFavorites = currentFavorites.filter(
+        (item) => item.id !== itemId
+      );
       await updateDoc(docRef, {
-        [itemType]: arrayRemove(itemId),
+        [itemType]: updatedFavorites,
       });
     } else {
       throw new Error(

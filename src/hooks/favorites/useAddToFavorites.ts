@@ -4,11 +4,11 @@ import { firestore } from "../../../constants/firebaseConfig";
 
 const addFavorite = async ({
   userId,
-  itemId,
+  itemData,
   itemType,
 }: {
   userId: string;
-  itemId: string;
+  itemData: DishCardType;
   itemType: "dish";
 }) => {
   const docRef = doc(firestore, `favorites/${userId}`);
@@ -16,16 +16,26 @@ const addFavorite = async ({
   try {
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      await updateDoc(docRef, {
-        [itemType]: arrayUnion(itemId),
-      });
+      const currentFavorites = docSnap.data()[itemType] || [];
+      const itemIndex = currentFavorites.findIndex(
+        (fav) => fav.id === itemData.id
+      );
+
+      if (itemIndex === -1) {
+        const updatedFavorites = [...currentFavorites, itemData];
+        await updateDoc(docRef, {
+          [itemType]: updatedFavorites,
+        });
+      } else {
+        console.log(`Item ${itemData.id} is already in favorites`);
+      }
     } else {
       await setDoc(docRef, {
-        [itemType]: [itemId],
+        [itemType]: [itemData],
       });
     }
 
-    return { userId, itemType, itemId };
+    return { userId, itemType, itemData };
   } catch (err) {
     throw new Error("Error adding favorite");
   }

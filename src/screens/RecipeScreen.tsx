@@ -55,7 +55,12 @@ export default function RecipeScreen({ route }: Props) {
   const onAddToFavorites = () => {
     addToFavoritesMutate({
       userId: userData!.uid,
-      itemId: route.params.productId,
+      itemData: {
+        id: route.params.productId,
+        title: dishData!.title,
+        image: dishData!.image,
+        imageType: dishData!.imageType,
+      },
       itemType: "dish",
     });
   };
@@ -81,7 +86,9 @@ export default function RecipeScreen({ route }: Props) {
           <Text style={{ fontSize: 24 }}>{dishData.title}</Text>
           <Text style={{}}>{dishData.summary}</Text>
           {favoriteDishesData &&
-          favoriteDishesData.includes(route.params.productId) ? (
+          favoriteDishesData.find(
+            (item) => item.id === route.params.productId
+          ) ? (
             <TouchableOpacity
               disabled={
                 !userData || removeFromFavoritesLoading || favoriteDishesLoading
