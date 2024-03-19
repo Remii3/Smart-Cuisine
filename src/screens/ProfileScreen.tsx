@@ -4,6 +4,8 @@ import { useFetchFavorites } from "../hooks/favorites/useFetchFavorites";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import DishCard from "../components/DishCard";
+import ScreenLoader from "../components/UI/ScreenLoader";
+import ScreenError from "../components/UI/ScreenError";
 
 const ProfileScreen = () => {
   const userData = useSelector((state: RootState) => state.user.data);
@@ -13,6 +15,14 @@ const ProfileScreen = () => {
     isLoading: favoriteDishesLoading,
     error: favoriteDishesError,
   } = useFetchFavorites(userData?.uid || null);
+
+  if (favoriteDishesLoading) {
+    return <ScreenLoader />;
+  }
+
+  if (favoriteDishesError instanceof Error) {
+    return <ScreenError message={favoriteDishesError.message} />;
+  }
 
   return (
     <View>

@@ -1,9 +1,11 @@
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import { RootDrawerParamList } from "../../App";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import DishCard from "../components/DishCard";
 import { useState } from "react";
+import ScreenError from "../components/UI/ScreenError";
+import ScreenLoader from "../components/UI/ScreenLoader";
 
 type Props = DrawerScreenProps<RootDrawerParamList>;
 
@@ -18,11 +20,13 @@ const fetchDishes = async (page: number) => {
 export default function RecipesScreen({ navigation }: Props) {
   const [page, setPage] = useState(0);
 
-  const { data, isLoading, error } = useQuery(
-    ["dishes", page],
-    () => fetchDishes(page),
-    { keepPreviousData: true }
-  );
+  const {
+    data: dishesData,
+    isLoading: dishesLoading,
+    error: dishesError,
+  } = useQuery(["dishes", page], () => fetchDishes(page), {
+    keepPreviousData: true,
+  });
 
   const onNextPage = () => {
     setPage((prev) => prev + 2);
@@ -31,13 +35,20 @@ export default function RecipesScreen({ navigation }: Props) {
     setPage((prev) => prev - 2);
   };
 
+  if (dishesLoading) {
+    return <ScreenLoader />;
+  }
+
+  if (dishesError instanceof Error) {
+    return <ScreenError message={dishesError.message} />;
+  }
+
   return (
     <View style={styles.container}>
       <Text>Recipes</Text>
       <ScrollView>
-        {!isLoading &&
-          data &&
-          data.map((dish: DishCardType) => (
+        {dishesData && dishesData.length > 0 ? (
+          dishesData.map((dish: DishCardType) => (
             <DishCard
               id={dish.id}
               image={dish.image}
@@ -45,7 +56,10 @@ export default function RecipesScreen({ navigation }: Props) {
               title={dish.title}
               key={dish.id}
             />
-          ))}
+          ))
+        ) : (
+          <Text>No results</Text>
+        )}
       </ScrollView>
       <Button title="Next" onPress={onNextPage} />
       <Button title="Prev" disabled={page == 0} onPress={onPrevPage} />
