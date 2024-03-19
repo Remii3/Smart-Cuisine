@@ -87,7 +87,7 @@ export default function RecipeScreen({ route }: Props) {
           <Text style={{}}>{dishData.summary}</Text>
           {favoriteDishesData &&
           favoriteDishesData.find(
-            (item) => item.id === route.params.productId
+            (item: { id: string }) => item.id === route.params.productId
           ) ? (
             <TouchableOpacity
               disabled={

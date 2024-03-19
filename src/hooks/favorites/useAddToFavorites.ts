@@ -1,4 +1,4 @@
-import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { useMutation, useQueryClient } from "react-query";
 import { firestore } from "../../../constants/firebaseConfig";
 
@@ -15,10 +15,11 @@ const addFavorite = async ({
 
   try {
     const docSnap = await getDoc(docRef);
+
     if (docSnap.exists()) {
       const currentFavorites = docSnap.data()[itemType] || [];
       const itemIndex = currentFavorites.findIndex(
-        (fav) => fav.id === itemData.id
+        (fav: { id: string }) => fav.id === itemData.id
       );
 
       if (itemIndex === -1) {
@@ -26,8 +27,6 @@ const addFavorite = async ({
         await updateDoc(docRef, {
           [itemType]: updatedFavorites,
         });
-      } else {
-        console.log(`Item ${itemData.id} is already in favorites`);
       }
     } else {
       await setDoc(docRef, {

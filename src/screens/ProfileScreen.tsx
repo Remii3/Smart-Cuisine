@@ -15,21 +15,24 @@ const ProfileScreen = () => {
   } = useFetchFavorites(userData?.uid || null);
 
   return (
-    <ScrollView>
-      {favoriteDishesData && favoriteDishesData.length > 0 ? (
-        favoriteDishesData.map((dish: DishCardType) => (
-          <DishCard
-            key={dish.id}
-            id={dish.id}
-            title={dish.title}
-            image={dish.image}
-            imageType={dish.imageType}
-          />
-        ))
-      ) : (
-        <Text>No favorites yet</Text>
-      )}
-    </ScrollView>
+    <View>
+      <Text>Favorites</Text>
+      <ScrollView>
+        {favoriteDishesData && favoriteDishesData.length > 0 ? (
+          favoriteDishesData.map((dish: DishCardType) => (
+            <DishCard
+              key={dish.id}
+              id={dish.id}
+              title={dish.title}
+              image={dish.image}
+              imageType={dish.imageType}
+            />
+          ))
+        ) : (
+          <Text>No favorites yet</Text>
+        )}
+      </ScrollView>
+    </View>
   );
 };
 
