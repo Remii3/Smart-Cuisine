@@ -1,5 +1,20 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import {
+  Button,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
+import { Link, useNavigation } from "@react-navigation/native";
+import {
+  DrawerNavigationProp,
+  DrawerScreenProps,
+} from "@react-navigation/drawer";
+import { RootDrawerParamList } from "../../App";
+
+type Props = DrawerNavigationProp<RootDrawerParamList>;
 
 export default function DishCard({
   id,
@@ -7,13 +22,19 @@ export default function DishCard({
   imageType,
   title,
 }: DishCardType) {
+  const navigation = useNavigation<Props>();
+
   return (
-    <View style={styles.card}>
-      <Image source={{ uri: image }} style={styles.image} />
-      <View style={styles.info}>
-        <Text style={styles.title}>{title}</Text>
+    <TouchableOpacity
+      onPress={() => navigation.navigate("Recipe", { productId: id })}
+    >
+      <View style={styles.card}>
+        <Image source={{ uri: image }} style={styles.image} />
+        <View style={styles.info}>
+          <Text style={styles.title}>{title}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

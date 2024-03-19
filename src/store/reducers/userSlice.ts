@@ -21,7 +21,6 @@ export const fetchUser = createAsyncThunk(
     if (docSnap.exists()) {
       return docSnap.data();
     } else {
-      console.log("No such document!");
       return null;
     }
   }

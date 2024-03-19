@@ -24,6 +24,7 @@ export default function RegisterScreen({ navigation }: Props) {
       );
       const user = userCredentials.user;
       await setDoc(doc(firestore, "users", user.uid), {
+        uid: user.uid,
         email: user.email,
       });
 
@@ -31,7 +32,7 @@ export default function RegisterScreen({ navigation }: Props) {
 
       navigation.navigate("Home");
     } catch (err) {
-      console.error("Error registering user: ", err);
+      throw new Error("Error registering user");
     }
   };
 

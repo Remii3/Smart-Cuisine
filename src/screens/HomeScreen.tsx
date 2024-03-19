@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { RootDrawerParamList } from "../../App";
 import { colors } from "../../constants/colors";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 type Props = DrawerScreenProps<RootDrawerParamList>;
 
 const HomeScreen = ({ navigation }: Props) => {
