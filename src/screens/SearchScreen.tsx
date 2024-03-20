@@ -4,7 +4,8 @@ import { DrawerScreenProps } from "@react-navigation/drawer";
 import { RootDrawerParamList } from "../../App";
 import { useQuery } from "react-query";
 import DishCard from "../components/DishCard";
-import { colors } from "../../constants/colors";
+import ScreenError from "../components/UI/ScreenError";
+import ScreenLoader from "../components/UI/ScreenLoader";
 
 type Props = DrawerScreenProps<RootDrawerParamList, "Search">;
 
@@ -16,26 +17,36 @@ async function fetchDishes({ prompt }: { prompt: string }) {
 
 export default function SearchScreen({ route }: Props) {
   const prompt = route.params.prompt;
-  const { data, error, isError, isLoading } = useQuery("dishes", () =>
-    fetchDishes({ prompt })
-  );
-  if (isLoading) return <Text>Loading...</Text>;
-  if (isError && error instanceof Error)
-    return <Text>Error: {error.message}</Text>;
+  const {
+    data: searchData,
+    error: searchError,
+    isLoading: searchLoading,
+  } = useQuery("dishes", () => fetchDishes({ prompt }));
 
+  if (searchLoading) {
+    return <ScreenLoader />;
+  }
+
+  if (searchError instanceof Error) {
+    return <ScreenError message={searchError.message} />;
+  }
   return (
     <View>
       <Text>Results: </Text>
       <ScrollView style={styles.container}>
-        {data.results.map((dish: DishCardType) => (
-          <DishCard
-            key={dish.id}
-            id={dish.id}
-            image={dish.image}
-            imageType={dish.imageType}
-            title={dish.title}
-          />
-        ))}
+        {searchData && searchData.leangth > 0 ? (
+          searchData.results.map((dish: DishCardType) => (
+            <DishCard
+              key={dish.id}
+              id={dish.id}
+              image={dish.image}
+              imageType={dish.imageType}
+              title={dish.title}
+            />
+          ))
+        ) : (
+          <Text>No results</Text>
+        )}
       </ScrollView>
     </View>
   );

@@ -1,4 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { doc, getDoc } from "firebase/firestore";
+import { firestore } from "../../../constants/firebaseConfig";
 
 const initialState = {
   data: null,
@@ -10,16 +12,29 @@ const initialState = {
   error: string | null;
 };
 
-export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
-  const response = await fetch("https://jsonplaceholder.typicode.com/users/1");
-  const data = await response.json();
-  return data;
-});
+export const fetchUser = createAsyncThunk(
+  "user/fetchUser",
+  async (userId: string) => {
+    const docRef = doc(firestore, "users", userId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      return null;
+    }
+  }
+);
 
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.data = null;
+      state.status = "idle";
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUser.pending, (state) => {
@@ -27,7 +42,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.data = action.payload;
+        state.data = action.payload as UserDataType;
       })
       .addCase(fetchUser.rejected, (state, action) => {
         state.status = "failed";
