@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { RootDrawerParamList } from "../../App";
+import { RootDrawerParamList } from "../../Router";
 import { useQuery } from "react-query";
 import DishCard from "../components/DishCard";
 import ScreenError from "../components/UI/ScreenError";

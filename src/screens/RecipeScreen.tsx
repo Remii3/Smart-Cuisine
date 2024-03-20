@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import React from "react";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { RootDrawerParamList } from "../../App";
+import { RootDrawerParamList } from "../../Router";
 import { useAddToFavorites } from "../hooks/favorites/useAddToFavorites";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";

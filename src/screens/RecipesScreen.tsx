@@ -1,6 +1,6 @@
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
-import { RootDrawerParamList } from "../../App";
+import { RootDrawerParamList } from "../../Router";
 import { useQuery } from "react-query";
 import DishCard from "../components/DishCard";
 import { useState } from "react";

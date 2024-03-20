@@ -1,12 +1,16 @@
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, firestore } from "../../constants/firebaseConfig";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { RootDrawerParamList } from "../../App";
+import { RootDrawerParamList } from "../../Router";
 import { doc, setDoc } from "firebase/firestore";
 import { fetchUser } from "../store/reducers/userSlice";
 import { useAppDispatch } from "../hooks/useAppDispatch";
+import CustomTextInput from "../components/UI/CustomTextInput";
+import CustomMainButton from "../components/UI/CustomMainButton";
+import CustomPlainButton from "../components/UI/CustomPlainButton";
+import { colors } from "../../constants/colors";
 
 type Props = DrawerScreenProps<RootDrawerParamList, "Register">;
 
@@ -36,20 +40,66 @@ export default function RegisterScreen({ navigation }: Props) {
     }
   };
 
+  const goToLogin = () => {
+    navigation.navigate("Login");
+  };
+
   return (
-    <View>
-      <Text>RegisterScreen</Text>
-      <View>
-        <Text>Email</Text>
-        <TextInput onChangeText={setEmail} />
+    <View style={styles.screenContainer}>
+      <Text style={styles.heading}>Welcome visitor!</Text>
+      <View style={styles.loginContainer}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Email</Text>
+          <CustomTextInput placeholder={"Email"} onChangeText={setEmail} />
+        </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Password</Text>
+          <CustomTextInput
+            placeholder={"Password"}
+            onChangeText={setPassword}
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <CustomMainButton title="Sign up" onPress={onRegister} />
+          <CustomPlainButton
+            title="Already have an account?"
+            onPress={goToLogin}
+          />
+        </View>
       </View>
-      <View>
-        <Text>Password</Text>
-        <TextInput onChangeText={setPassword} />
-      </View>
-      <Button title="Register" onPress={onRegister} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  heading: {
+    fontSize: 36,
+    fontWeight: "700",
+    marginBottom: 40,
+  },
+
+  screenContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.backgroundColor,
+  },
+  loginContainer: {
+    width: "80%",
+  },
+  inputLabel: {
+    fontSize: 14,
+    marginBottom: 5,
+    paddingLeft: 1,
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    marginTop: 10,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 10,
+  },
+});

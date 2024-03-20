@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { RootDrawerParamList } from "../../App";
+import { RootDrawerParamList } from "../../Router";
 import { colors } from "../../constants/colors";
 type Props = DrawerScreenProps<RootDrawerParamList>;
 
