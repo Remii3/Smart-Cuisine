@@ -1,8 +1,9 @@
 import { Image, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { RootDrawerParamList } from "../../App";
+import { RootDrawerParamList } from "../../Router";
 import { colors } from "../../constants/colors";
+import CustomTextInput from "../components/UI/CustomTextInput";
 type Props = DrawerScreenProps<RootDrawerParamList>;
 
 const HomeScreen = ({ navigation }: Props) => {
@@ -24,22 +25,30 @@ const HomeScreen = ({ navigation }: Props) => {
       <View style={styles.overlay}></View>
       <View
         style={{
-          top: "50%",
+          top: "40%",
           position: "absolute",
           width: "100%",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          gap: 60,
         }}
       >
         <Text style={styles.title}>Smart cuisine</Text>
         <View style={styles.container}>
-          <TextInput
-            style={styles.input}
-            placeholder="Search for recipes"
+          <CustomTextInput
+            placeholder="Search new dishes"
             onChangeText={setSearchPrompt}
             value={searchPrompt}
             onSubmitEditing={() => searchRecipes()}
+            customCardStyles={{
+              backgroundColor: "#eee",
+            }}
+            customTextStyles={{
+              fontWeight: "500",
+              color: colors.black,
+              width: 200,
+            }}
           />
         </View>
       </View>
@@ -78,20 +87,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 36,
-    fontWeight: "600",
+    fontSize: 48,
+    fontWeight: "700",
     color: "white",
-  },
-  input: {
-    height: 40,
-    width: 200,
-    margin: 12,
-    borderWidth: 1,
-    borderColor: colors.darkGray,
-    padding: 10,
-    borderRadius: 12,
-    fontSize: 16,
-    color: colors.dark,
-    backgroundColor: colors.white,
   },
 });

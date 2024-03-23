@@ -14,4 +14,6 @@ export const colors = {
   dark: "#222",
   transparent: "transparent",
   overlay: "rgba(0, 0, 0, 0.5)",
+  backgroundColor: "rgba(0,175,145, 0.1)",
+  primaryBackgroundColor: "rgba(255, 111, 97, 0.1)",
 };

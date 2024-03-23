@@ -8,7 +8,7 @@ const addFavorite = async ({
   itemType,
 }: {
   userId: string;
-  itemData: DishCardType;
+  itemData: BasicDishInfoType;
   itemType: "dish";
 }) => {
   const docRef = doc(firestore, `favorites/${userId}`);

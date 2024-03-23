@@ -1,16 +1,17 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { RootDrawerParamList } from "../../App";
+import { RootDrawerParamList } from "../../Router";
 import { useQuery } from "react-query";
 import DishCard from "../components/DishCard";
 import ScreenError from "../components/UI/ScreenError";
 import ScreenLoader from "../components/UI/ScreenLoader";
+import { colors } from "../../constants/colors";
 
 type Props = DrawerScreenProps<RootDrawerParamList, "Search">;
 
 async function fetchDishes({ prompt }: { prompt: string }) {
-  const url = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.EXPO_PUBLIC_SPOONACULAR_API_KEY}&includeIngredients=${prompt}`;
+  const url = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.EXPO_PUBLIC_SPOONACULAR_API_KEY}&includeIngredients=${prompt}&number=4`;
   const res = await fetch(url);
   return await res.json();
 }
@@ -31,10 +32,16 @@ export default function SearchScreen({ route }: Props) {
     return <ScreenError message={searchError.message} />;
   }
   return (
-    <View>
-      <Text>Results: </Text>
-      <ScrollView style={styles.container}>
-        {searchData && searchData.leangth > 0 ? (
+    <View style={styles.container}>
+      <Text style={styles.sectionTitle}>Results:</Text>
+      <ScrollView
+        contentContainerStyle={{
+          paddingBottom: 40,
+          paddingLeft: 10,
+          paddingRight: 10,
+        }}
+      >
+        {searchData && searchData.results.length > 0 ? (
           searchData.results.map((dish: DishCardType) => (
             <DishCard
               key={dish.id}
@@ -42,6 +49,7 @@ export default function SearchScreen({ route }: Props) {
               image={dish.image}
               imageType={dish.imageType}
               title={dish.title}
+              direction="vertical"
             />
           ))
         ) : (
@@ -54,8 +62,16 @@ export default function SearchScreen({ route }: Props) {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: "column",
-    gap: 20,
-    padding: 20,
+    paddingTop: 80,
+    paddingLeft: 10,
+    paddingRight: 10,
+    backgroundColor: colors.backgroundColor,
+  },
+  sectionTitle: {
+    fontSize: 26,
+    fontWeight: "600",
+    paddingLeft: 10,
   },
 });

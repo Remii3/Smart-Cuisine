@@ -3,12 +3,15 @@ type UserDataType = {
   email: string;
 };
 
-type DishCardType = {
+type BasicDishInfoType = {
   id: string;
   title: string;
   image: string;
   imageType: string;
 };
+type DishCardType = {
+  direction: "vertical" | "horizontal";
+} & BasicDishInfoType;
 
 type DishType = {
   id: string;
