@@ -6,28 +6,24 @@ const CustomTextInput = ({
   value,
   onChangeText,
   placeholder,
-  ...rest
+  customCardStyles,
+  customTextStyles,
+  onSubmitEditing,
 }: any) => {
-  const [isFocused, setIsFocused] = useState(false);
-
-  const handleFocus = () => setIsFocused(true);
-  const handleBlur = () => setIsFocused(false);
-
   return (
     <View
       style={[
         styles.card,
         Platform.OS === "android" ? styles.elevation : styles.shadowProp,
+        customCardStyles && customCardStyles,
       ]}
     >
       <TextInput
-        style={styles.input}
+        style={[styles.input, customTextStyles && customTextStyles]}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        {...rest}
+        onSubmitEditing={onSubmitEditing}
       />
     </View>
   );

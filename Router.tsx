@@ -26,6 +26,7 @@ import {
   DrawerScreenProps,
 } from "@react-navigation/drawer/lib/typescript/src/types";
 import { DrawerLayoutProps } from "react-native-gesture-handler";
+import CustomMainButton from "./src/components/UI/CustomMainButton";
 
 type RootStackParamList = {
   RootDrawer: undefined;
@@ -63,8 +64,14 @@ const CustomDrawerContent = (props: any) => {
         <DrawerItemList {...props} />
       </View>
 
-      <View>
-        {user.data && <Button title="Logout" onPress={logoutHandler} />}
+      <View style={{ padding: 10 }}>
+        {user.data && (
+          <CustomMainButton
+            title="Logout"
+            onPress={logoutHandler}
+            color={colors.danger}
+          />
+        )}
       </View>
     </DrawerContentScrollView>
   );
@@ -132,7 +139,7 @@ function DrawerNavigator({ navigation }: Props) {
         options={{
           headerTitle: "",
           headerTransparent: true,
-          headerTintColor: colors.dark,
+          headerTintColor: colors.light,
           drawerIcon: ({ size, color }) => (
             <Ionicons
               name="restaurant"
@@ -161,6 +168,7 @@ const Router = () => {
           name="Recipe"
           component={RecipeScreen}
           options={{
+            headerTransparent: true,
             headerTitle: "",
           }}
         />
@@ -169,6 +177,7 @@ const Router = () => {
           component={SearchScreen}
           options={{
             headerTitle: "",
+            headerTransparent: true,
           }}
         />
         {user.data ? (

@@ -33,32 +33,48 @@ const ProfileScreen = () => {
     });
   };
   return (
-    <View>
-      <Text>Favorites</Text>
-      <ScrollView>
-        {favoriteDishesData && favoriteDishesData.length > 0 ? (
-          favoriteDishesData.map((dish: DishCardType) => (
-            <DishCard
-              key={dish.id}
-              id={dish.id}
-              title={dish.title}
-              image={dish.image}
-              imageType={dish.imageType}
-            />
-          ))
-        ) : (
-          <Text>No favorites yet</Text>
-        )}
-        <CustomMainButton
-          title="Logout"
-          onPress={logoutHandler}
-          color={colors.danger}
-        />
-      </ScrollView>
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View>
+        <Text style={styles.sectionTitle}>Favorites</Text>
+        <ScrollView>
+          {favoriteDishesData && favoriteDishesData.length > 0 ? (
+            favoriteDishesData.map((dish: DishCardType) => (
+              <DishCard
+                key={dish.id}
+                id={dish.id}
+                title={dish.title}
+                image={dish.image}
+                imageType={dish.imageType}
+                direction="horizontal"
+              />
+            ))
+          ) : (
+            <Text>No favorites yet</Text>
+          )}
+        </ScrollView>
+      </View>
+      <CustomMainButton
+        title="Logout"
+        onPress={logoutHandler}
+        color={colors.danger}
+      />
+    </ScrollView>
   );
 };
 
 export default ProfileScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+    backgroundColor: colors.backgroundColor,
+    justifyContent: "space-between",
+    display: "flex",
+    flexDirection: "column",
+    flex: 1,
+  },
+  sectionTitle: {
+    fontSize: 26,
+    fontWeight: "600",
+  },
+});

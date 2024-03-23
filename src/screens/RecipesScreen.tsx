@@ -1,72 +1,84 @@
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { colors } from "../../constants/colors";
+import useFetchDishesNavigate from "../hooks/dishes/useFetchDishesNavigate";
+import CustomPlainButton from "../components/UI/CustomPlainButton";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import { RootDrawerParamList } from "../../Router";
-import { useQuery } from "react-query";
-import DishCard from "../components/DishCard";
-import { useState } from "react";
-import ScreenError from "../components/UI/ScreenError";
-import ScreenLoader from "../components/UI/ScreenLoader";
+import ItemsCarousel from "../components/UI/ItemsCarousel";
 
-type Props = DrawerScreenProps<RootDrawerParamList>;
-
-const fetchDishes = async (page: number) => {
-  const offset = page * 2;
-  const url = `https://api.spoonacular.com/recipes/findByNutrients?apiKey=${process.env.EXPO_PUBLIC_SPOONACULAR_API_KEY}&minCarbs=10&maxCarbs=50&number=2&offset=${offset}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  return data;
-};
+type Props = DrawerScreenProps<RootDrawerParamList, "Recipes">;
 
 export default function RecipesScreen({ navigation }: Props) {
-  const [page, setPage] = useState(0);
-
   const {
-    data: dishesData,
-    isLoading: dishesLoading,
-    error: dishesError,
-  } = useQuery(["dishes", page], () => fetchDishes(page), {
-    keepPreviousData: true,
+    dishesData: lowCarbsData,
+    dishesError: lowCarbsError,
+    dishesLoading: lowCarbsLoading,
+  } = useFetchDishesNavigate({
+    extraQuery: "&minCarbs=0&maxCarbs=50",
+    fetchname: "lowCarbs",
   });
 
-  const onNextPage = () => {
-    setPage((prev) => prev + 2);
-  };
-  const onPrevPage = () => {
-    setPage((prev) => prev - 2);
-  };
-
-  if (dishesLoading) {
-    return <ScreenLoader />;
-  }
-
-  if (dishesError instanceof Error) {
-    return <ScreenError message={dishesError.message} />;
-  }
+  const {
+    dishesData: lowCaloriesData,
+    dishesError: lowCaloriesError,
+    dishesLoading: lowCaloriesLoading,
+  } = useFetchDishesNavigate({
+    extraQuery: "&minCalories=0&maxCalories=50",
+    fetchname: "lowCalories",
+  });
 
   return (
     <View style={styles.container}>
-      <Text>Recipes</Text>
       <ScrollView>
-        {dishesData && dishesData.length > 0 ? (
-          dishesData.map((dish: DishCardType) => (
-            <DishCard
-              id={dish.id}
-              image={dish.image}
-              imageType={dish.imageType}
-              title={dish.title}
-              key={dish.id}
+        <View style={styles.banner}>
+          <Image
+            source={{
+              uri: `${process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BASE_URL}recipes_img.webp?alt=media&token=9669c37c-0038-4289-9994-1774a65d17cb`,
+            }}
+            style={styles.img}
+          />
+          <View style={styles.bannerOverlay} />
+          <Text style={styles.bannerText}>Recipes</Text>
+        </View>
+        <View style={styles.contentStyles}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.sectionTitle}>Low Carbs: </Text>
+            <CustomPlainButton
+              title="Show more"
+              onPress={() => navigation.navigate("Home")}
+              customStyle={{
+                fontSize: 14,
+                fontWeight: "600",
+                color: colors.secondary,
+              }}
             />
-          ))
-        ) : (
-          <Text>No results</Text>
-        )}
+          </View>
+          <ItemsCarousel
+            dataList={lowCarbsData}
+            error={lowCarbsError}
+            isLoading={lowCarbsLoading}
+          />
+        </View>
+        <View style={styles.contentStyles}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.sectionTitle}>Low Calories: </Text>
+            <CustomPlainButton
+              title="Show more"
+              onPress={() => navigation.navigate("Home")}
+              customStyle={{
+                fontSize: 14,
+                fontWeight: "600",
+                color: colors.secondary,
+              }}
+            />
+          </View>
+          <ItemsCarousel
+            dataList={lowCaloriesData}
+            error={lowCaloriesError}
+            isLoading={lowCaloriesLoading}
+          />
+        </View>
       </ScrollView>
-      <Button title="Next" onPress={onNextPage} />
-      <Button title="Prev" disabled={page == 0} onPress={onPrevPage} />
-      <Button
-        title="Go to Recipe"
-        onPress={() => navigation.navigate("Recipe", { productId: "#" })}
-      />
     </View>
   );
 }
@@ -74,8 +86,63 @@ export default function RecipesScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: colors.backgroundColor,
+    justifyContent: "flex-start",
+  },
+  banner: {
+    height: 250,
+    width: "100%",
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    marginBottom: 30,
+  },
+  img: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  bannerOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+
+  bannerText: {
+    fontSize: 40,
+    fontWeight: "600",
+    color: colors.light,
+    textAlign: "center",
+    marginTop: 100,
+  },
+  titleContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+  },
+  sectionTitle: {
+    fontSize: 26,
+    fontWeight: "600",
+  },
+  dishesContainer: {
+    flexDirection: "row",
+    maxHeight: 300,
+    marginLeft: -10,
+    marginRight: -10,
+  },
+
+  contentStyles: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginBottom: 40,
   },
 });
